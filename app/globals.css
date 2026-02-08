@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #000000;
+  --foreground: #eeeeee;
+  --neon-green: #ccff00;
+  --neon-pink: #ff0099;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+  cursor: none !important;
+  /* Force hide on body */
+}
+
+/* Enforce no cursor on EVERYTHING */
+*,
+*::before,
+*::after,
+a,
+button,
+input,
+textarea,
+select {
+  cursor: none !important;
+}
+
+/* Custom Selection */
+::selection {
+  background: var(--neon-green);
+  color: black;
+}
+
+/* Utility Animations */
+@keyframes title {
+  from {
+    opacity: 0;
+    transform: translateY(2rem) scale(0.95);
+    filter: blur(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.animate-title {
+  animation: title 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@keyframes subtle-drift {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  50% {
+    transform: translate3d(2%, 2%, 0) rotate(2deg);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+}
+
+.animate-subtle-drift {
+  animation: subtle-drift 20s infinite ease-in-out;
+  will-change: transform;
+}
+
+/* Brutalist Utilities */
+.text-outline {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+  color: transparent;
+}
+
+.hover-text-fill:hover {
+  -webkit-text-stroke: 0px;
+  color: var(--neon-green);
+}
+
+.border-neon {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.border-neon:hover {
+  border-color: var(--neon-green);
+  box-shadow: 0 0 15px rgba(204, 255, 0, 0.3);
+}
+
+/* Scrollbar Hide for Clean Look */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+/* Clip Path Utility for Buttons */
+.clip-path-button {
+  clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+}
