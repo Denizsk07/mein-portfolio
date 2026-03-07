@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 type ProjectCardProps = {
+    _id?: string;
     title: string;
     description: string;
     image?: string; // Optional now

@@ -30,5 +30,5 @@
     "react-scroll.d.ts",
     "tailwindcss.d.ts"
 , "app/lib/database.ts", "app/lib/create-admin.ts", "app/api/auth/[...nextauth]", "app/lib/init-db.ts", "app/lib/database.ts"  ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "modern-portfolio"]
 }

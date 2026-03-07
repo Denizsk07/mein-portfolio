@@ -3,8 +3,9 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface ProjectDocument extends Document {
   title: string;
   description: string;
-  image: string;
-  youtube_link: string;
+  image?: string;
+  preview_video: string;
+  youtube_link?: string;
   category: string;
   role?: string;
   client?: string;

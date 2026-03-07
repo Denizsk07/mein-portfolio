@@ -49,7 +49,7 @@ export default async function ProjectPage({ params }: { params: { id: string } }
                         <FaArrowLeft /> Back
                     </Link>
                 </MagneticWrapper>
-                <div className="text-xs font-mono text-neutral-500 uppercase">Case Study: {project._id.toString().slice(-4)}</div>
+                <div className="text-xs font-mono text-neutral-500 uppercase">Case Study: {String(project._id).slice(-4)}</div>
             </nav>
 
             {/* HERO SECTION */}
