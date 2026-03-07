@@ -31,11 +31,9 @@ export default async function ProjectPage({ params }: { params: { id: string } }
 
             {/* NAVIGATION */}
             <nav className="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center mix-blend-difference">
-                <MagneticWrapper>
                     <Link href="/" className="text-xl md:text-2xl font-black uppercase tracking-widest flex items-center gap-3 hover:text-neon-green transition-colors">
                         <FaArrowLeft className="text-2xl md:text-3xl" /> Back
                     </Link>
-                </MagneticWrapper>
                 <div className="text-xs font-mono text-neutral-500 uppercase">Case Study: {String(project._id).slice(-4)}</div>
             </nav>
 
@@ -54,7 +52,7 @@ export default async function ProjectPage({ params }: { params: { id: string } }
                 </div>
 
                 <div className="max-w-7xl w-full mx-auto relative z-10">
-                    <div className="flex flex-col md:flex-row items-end justify-between gap-8">
+                    <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-8 mt-16 md:mt-0">
                         <div>
                             <span className="inline-block px-3 py-1 border border-neon-green text-neon-green text-xs font-mono uppercase tracking-widest mb-6 rounded-full bg-neon-green/10">
                                 {project.category}
