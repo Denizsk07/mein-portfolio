@@ -22,7 +22,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false }, { status: 401 });
 }
 
-export async function POST_LOGOUT() {
-    cookies().delete('admin_token');
-    return NextResponse.json({ success: true });
-}
+
