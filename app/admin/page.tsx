@@ -23,10 +23,15 @@ export default function AdminPage() {
 
   const [status, setStatus] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0); // New State
+  const [uploadProgress, setUploadProgress] = useState(0); 
   const [categories, setCategories] = useState<string[]>([]);
+  
+  // Manage Projects State
+  const [projects, setProjects] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<'create' | 'manage'>('create');
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  // Fetch existing categories on mount
+  // Fetch existing categories and projects on mount
   React.useEffect(() => {
     fetch('/api/projects?limit=0')
       .then(res => res.json())
@@ -34,9 +39,10 @@ export default function AdminPage() {
         if (Array.isArray(data)) {
           const uniqueCats = Array.from(new Set(data.map((p: any) => p.category))) as string[];
           setCategories(uniqueCats);
+          setProjects(data.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
         }
       })
-      .catch(err => console.error('Failed to fetch categories:', err));
+      .catch(err => console.error('Failed to fetch data:', err));
   }, []);
 
   // Secure Login via API
@@ -129,43 +135,94 @@ export default function AdminPage() {
     setStatus('Submitting...');
 
     try {
-      const res = await fetch('/api/projects', {
-        method: 'POST',
+      const url = editingId ? `/api/projects/${editingId}` : '/api/projects';
+      const method = editingId ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
       if (res.ok) {
-        setStatus('Success! Project added.');
-        setFormData(prev => ({
-          title: '',
-          description: '',
-          image: '',
-          preview_video: '',
-          youtube_link: '',
-          category: prev.category, // Keep category for batch uploads
-          role: '',
-          client: '',
-          tools: '',
-          year: ''
-        }));
+        const savedProject = await res.json();
+        setStatus(editingId ? 'Success! Project updated.' : 'Success! Project added.');
+        
+        if (editingId) {
+            setProjects(prev => prev.map(p => p._id === editingId ? savedProject : p));
+        } else {
+            setProjects(prev => [savedProject, ...prev]);
+            // Extract categories dynamically
+            if(!categories.includes(savedProject.category)) {
+                setCategories([...categories, savedProject.category]);
+            }
+        }
+
+        if(!editingId) {
+            setFormData(prev => ({
+            title: '', description: '', image: '', preview_video: '', youtube_link: '', category: prev.category, role: '', client: '', tools: '', year: ''
+            }));
+        }
+        
       } else {
-        // Try to parse JSON, if fails, read text
-        let errorMessage = 'Failed to add project.';
+        let errorMessage = 'Failed to process project.';
         try {
           const errorData = await res.json();
           errorMessage = errorData.error || errorData.message || errorMessage;
         } catch (e) {
-          console.error('Failed to parse error response:', e);
-          errorMessage = `Server Error: ${res.status} ${res.statusText}`;
+          errorMessage = `Server Error: ${res.status}`;
         }
         setStatus(`Error: ${errorMessage}`);
       }
     } catch (error: any) {
       console.error(error);
-      setStatus(`Error: ${error.message || 'Network issue (Check Console)'}`);
+      setStatus(`Error: Network issue`);
     }
   };
+
+  const handleEditClick = (project: any) => {
+    setEditingId(project._id);
+    setFormData({
+      title: project.title || '',
+      description: project.description || '',
+      image: project.image || '',
+      preview_video: project.preview_video || '',
+      youtube_link: project.youtube_link || '',
+      category: project.category || '',
+      role: project.role || '',
+      client: project.client || '',
+      tools: project.tools || '',
+      year: project.year || ''
+    });
+    setActiveTab('create');
+    window.scrollTo(0, 0);
+  };
+
+  const handleDelete = async (id: string, title: string) => {
+    if (!window.confirm(`Are you sure you want to delete "${title}"? This cannot be undone.`)) return;
+    
+    try {
+      const res = await fetch(`/api/projects/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setProjects(prev => prev.filter(p => p._id !== id));
+        alert('Project deleted.');
+      } else {
+        alert('Failed to delete project.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network error while deleting.');
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setFormData({
+      title: '', description: '', image: '', preview_video: '', youtube_link: '', category: '', role: '', client: '', tools: '', year: ''
+    });
+    setStatus(null);
+  };
+
 
   if (!isAuthenticated) {
     return (
@@ -198,7 +255,31 @@ export default function AdminPage() {
           <button onClick={() => setIsAuthenticated(false)} className="text-red-500 hover:text-red-400 uppercase text-sm font-bold tracking-widest">Logout</button>
         </div>
 
+        {/* TABS */}
+        <div className="flex gap-4 mb-12 border-b border-white/10 pb-4">
+            <button 
+                onClick={() => setActiveTab('create')}
+                className={`uppercase tracking-widest font-bold text-sm px-4 py-2 ${activeTab === 'create' ? 'text-neon-green border-b-2 border-neon-green' : 'text-neutral-500 hover:text-white'}`}
+            >
+                {editingId ? 'Edit Project' : 'Add New Project'}
+            </button>
+            <button 
+                onClick={() => { setActiveTab('manage'); cancelEdit(); }}
+                className={`uppercase tracking-widest font-bold text-sm px-4 py-2 ${activeTab === 'manage' ? 'text-neon-green border-b-2 border-neon-green' : 'text-neutral-500 hover:text-white'}`}
+            >
+                Manage Projects ({projects.length})
+            </button>
+        </div>
+
+
+        {activeTab === 'create' ? (
         <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+            {editingId && (
+                <div className="bg-neon-green/10 border border-neon-green p-4 rounded flex justify-between items-center mb-4">
+                    <p className="text-neon-green font-mono text-sm capitalize">Editing Project: <b>{formData.title}</b></p>
+                    <button type="button" onClick={cancelEdit} className="text-white hover:text-red-500 text-xs font-bold uppercase tracking-widest border border-white/20 px-3 py-1 bg-black">Cancel Edit</button>
+                </div>
+            )}
 
           {/* MAIN INFO */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -295,11 +376,11 @@ export default function AdminPage() {
               />
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-xs uppercase tracking-widest text-neutral-500">Year</label>
+              <label className="text-xs uppercase tracking-widest text-neutral-500">Date/Year</label>
               <input
                 name="year"
                 className="bg-neutral-900 border border-neutral-800 p-4 text-white focus:border-neon-green outline-none"
-                placeholder="e.g. 2024"
+                placeholder="e.g. 05.02.2025"
                 value={formData.year || ''}
                 onChange={handleChange}
               />
@@ -308,7 +389,9 @@ export default function AdminPage() {
 
           {/* FILE UPLOAD: VIDEO ONLY */}
           <div className="flex flex-col gap-2 border border-white/10 p-4 rounded bg-white/5 mt-6">
-            <label className="text-xs uppercase tracking-widest text-neon-green">Upload Project Video (Required)</label>
+            <label className="text-xs uppercase tracking-widest text-neon-green">
+                {editingId && formData.preview_video ? 'Replace Project Video (Optional)' : 'Upload Project Video (Required)'}
+            </label>
             <input
               type="file"
               accept="video/*"
@@ -331,24 +414,61 @@ export default function AdminPage() {
               </p>
             )}
 
-            {formData.preview_video && !uploading && <p className="text-green-500 text-xs">✓ Video uploaded: {formData.preview_video.split('/').pop()}</p>}
+            {formData.preview_video && !uploading && (
+                <div className="mt-2 text-xs">
+                    <p className="text-green-500">✓ Video attached (URL hidden)</p>
+                </div>
+            )}
           </div>
 
           <button
             type="submit"
             disabled={uploading}
-            className="mt-8 bg-white text-black font-black uppercase text-xl py-6 hover:bg-neon-green transition-colors disabled:opacity-50"
+            className={`mt-8 text-black font-black uppercase text-xl py-6 transition-colors disabled:opacity-50 ${editingId ? 'bg-neon-green hover:bg-white' : 'bg-white hover:bg-neon-green'}`}
           >
-            {uploading ? 'Uploading Files...' : 'Publish Project'}
+            {uploading ? 'Uploading Files...' : (editingId ? 'Update Master Record' : 'Publish Project')}
           </button>
 
           {status && (
-            <p className={`text-center mt-4 ${status.includes('Error') ? 'text-red-500' : 'text-neon-green'}`}>
+            <p className={`text-center mt-4 font-mono text-sm tracking-widest uppercase ${status.includes('Error') ? 'text-red-500' : 'text-neon-green'}`}>
               {status}
             </p>
           )}
 
         </form>
+        ) : (
+            <div className="flex flex-col gap-4">
+                {projects.length === 0 ? (
+                    <p className="text-neutral-500 font-mono italic">No projects found in database.</p>
+                ) : (
+                    projects.map(project => (
+                        <div key={project._id} className="bg-white/5 border border-white/10 p-4 md:p-6 rounded flex flex-col md:flex-row justify-between items-start md:items-center hover:border-white/30 transition-colors">
+                            <div className="mb-4 md:mb-0">
+                                <span className="text-[10px] uppercase font-mono text-neon-green border border-neon-green/30 px-2 py-1 rounded inline-block mb-2">{project.category}</span>
+                                <h3 className="text-2xl font-black uppercase tracking-tight">{project.title}</h3>
+                                <p className="text-neutral-500 text-xs font-mono mt-1">
+                                    Added: {new Date(project.createdAt).toLocaleDateString('de-DE')}
+                                </p>
+                            </div>
+                            <div className="flex gap-2 w-full md:w-auto">
+                                <button 
+                                    onClick={() => handleEditClick(project)}
+                                    className="flex-1 md:flex-none px-6 py-3 bg-white/10 hover:bg-white text-white hover:text-black uppercase text-xs font-bold tracking-widest transition-colors"
+                                >
+                                    Edit
+                                </button>
+                                <button 
+                                    onClick={() => handleDelete(project._id, project.title)}
+                                    className="flex-1 md:flex-none px-6 py-3 bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white uppercase text-xs font-bold tracking-widest transition-colors"
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+        )}
       </div>
     </div>
   );

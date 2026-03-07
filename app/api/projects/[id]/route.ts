@@ -61,3 +61,22 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
 }
+
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+  await connectToDatabase();
+  const { id } = params;
+
+  try {
+    const body = await req.json();
+    const updatedProject = await Project.findByIdAndUpdate(id, body, { new: true });
+    
+    if (!updatedProject) {
+      return NextResponse.json({ message: 'Project not found' }, { status: 404 });
+    }
+    
+    return NextResponse.json(updatedProject, { status: 200 });
+  } catch (error) {
+    console.error('Update error:', error);
+    return NextResponse.json({ message: 'Error updating project', error }, { status: 500 });
+  }
+}
