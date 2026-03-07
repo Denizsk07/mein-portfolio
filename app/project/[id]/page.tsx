@@ -93,8 +93,15 @@ export default async function ProjectPage({ params }: { params: { id: string } }
                 </div>
             </section>
 
-
-
+            <section className="py-24 px-4 max-w-7xl mx-auto">
+                <div className="aspect-video w-full border border-white/20 rounded-2xl overflow-hidden shadow-2xl shadow-neon-green/5 flex items-center justify-center bg-black">
+                    <video
+                        src={project.preview_video}
+                        controls
+                        className="w-full h-full object-contain"
+                    />
+                </div>
+            </section>
             <section className="py-32 flex justify-center border-t border-white/20">
                 <MagneticWrapper strength={0.4}>
                     <Link href="/" className="inline-flex items-center gap-4 text-4xl font-black uppercase hover:text-neon-green transition-colors">
