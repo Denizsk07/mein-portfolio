@@ -36,7 +36,10 @@ export const ProjectCard = ({ title, description, previewVideo, category }: Proj
                     {previewVideo ? (
                         <video
                             src={previewVideo}
-                            controls
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
                             className="w-full h-full object-cover"
                         />
                     ) : (

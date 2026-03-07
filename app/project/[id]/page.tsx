@@ -2,7 +2,6 @@ import { connectToDatabase } from '@/app/lib/database';
 import Project from '@/app/models/Project';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import CompareSlider from '@/app/components/CompareSlider';
 import MagneticWrapper from '@/app/components/MagneticWrapper';
 import Footer from '@/app/components/Footer';
 import AtmosphericBackground from '@/app/components/AtmosphericBackground';
@@ -25,18 +24,6 @@ export default async function ProjectPage({ params }: { params: { id: string } }
         notFound();
     }
 
-    // Determine "Before" footage for slider
-    // If no specific log footage is available, we simulate it on the "before" side using the main video
-    const sliderBefore = {
-        type: 'video' as const,
-        src: project.preview_video,
-        label: 'LOG / RAW'
-    };
-    const sliderAfter = {
-        type: 'video' as const,
-        src: project.preview_video,
-        label: 'GRADED FINAL'
-    };
 
     return (
         <main className="min-h-screen bg-black text-white relative overflow-x-hidden selection:bg-neon-green selection:text-black">
@@ -45,8 +32,8 @@ export default async function ProjectPage({ params }: { params: { id: string } }
             {/* NAVIGATION */}
             <nav className="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center mix-blend-difference">
                 <MagneticWrapper>
-                    <Link href="/" className="text-sm font-mono uppercase tracking-widest flex items-center gap-2 hover:text-neon-green transition-colors">
-                        <FaArrowLeft /> Back
+                    <Link href="/" className="text-xl md:text-2xl font-black uppercase tracking-widest flex items-center gap-3 hover:text-neon-green transition-colors">
+                        <FaArrowLeft className="text-2xl md:text-3xl" /> Back
                     </Link>
                 </MagneticWrapper>
                 <div className="text-xs font-mono text-neutral-500 uppercase">Case Study: {String(project._id).slice(-4)}</div>
@@ -106,40 +93,7 @@ export default async function ProjectPage({ params }: { params: { id: string } }
                 </div>
             </section>
 
-            {/* COLOR GRADING SLIDER */}
-            <section className="py-32 px-4 relative">
-                <div className="max-w-7xl mx-auto">
-                    <div className="mb-12 flex items-end justify-between">
-                        <div>
-                            <p className="text-neon-green font-mono text-sm tracking-widest mb-2">// POST_PRODUCTION</p>
-                            <h2 className="text-4xl md:text-6xl font-black uppercase">Color Grading</h2>
-                        </div>
-                        <div className="hidden md:block w-1/3 text-right">
-                            <p className="text-neutral-500 text-sm font-mono">
-                                Comparison: Log Profile vs. Final Grade. <br />
-                                Drag the slider to reveal the difference.
-                            </p>
-                        </div>
-                    </div>
 
-                    <div className="w-full shadow-2xl shadow-neon-green/10">
-                        <CompareSlider
-                            afterDetails={sliderAfter}
-                            beforeDetails={sliderBefore}
-                        />
-                    </div>
-                </div>
-            </section>
-
-            {/* GALLERY / MOCKUP */}
-            <section className="py-24 border-t border-white/10">
-                <div className="max-w-7xl mx-auto px-4 flex flex-col items-center text-center">
-                    <h3 className="text-2xl font-bold uppercase mb-8">Process & Timeline</h3>
-                    <div className="w-full aspect-[21/9] bg-white/5 border border-white/10 rounded-xl flex items-center justify-center">
-                        <p className="text-neutral-500 font-mono">Additional project assets loading...</p>
-                    </div>
-                </div>
-            </section>
 
             <section className="py-32 flex justify-center border-t border-white/20">
                 <MagneticWrapper strength={0.4}>

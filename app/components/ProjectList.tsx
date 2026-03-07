@@ -24,7 +24,7 @@ export default function ProjectList({ projects }: { projects: Project[] }) {
             {/* Header */}
             <div className="border-b border-white/20 pb-4 mb-4 flex justify-between items-end">
                 <h3 className="text-xs font-mono uppercase text-neutral-500 tracking-widest">Index</h3>
-                <h3 className="text-xs font-mono uppercase text-neutral-500 tracking-widest">Date / Project / Category</h3>
+                <h3 className="text-xs font-mono uppercase text-neutral-500 tracking-widest">Date / Category</h3>
             </div>
 
             {/* List Items */}

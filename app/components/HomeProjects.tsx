@@ -67,7 +67,7 @@ export default function HomeProjects() {
             >
                 // ORG_UNIT: 03_PROJECTS
             </motion.p>
-            <h3 className="text-5xl md:text-8xl font-black uppercase text-white tracking-tight">Selected<br />Projects</h3>
+            <h3 className="text-5xl md:text-8xl font-black uppercase text-white tracking-tight">Last<br />Projects</h3>
           </div>
 
           <div className="hidden md:block text-right">
