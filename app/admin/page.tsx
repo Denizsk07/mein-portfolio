@@ -66,15 +66,24 @@ export default function AdminPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // GENERIC FILE UPLOADER WITH PROGRESS
+  // GENERIC FILE UPLOADER WITH PROGRESS (Cloudinary)
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'image' | 'preview_video') => {
     if (!e.target.files || e.target.files.length === 0) return;
+
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+    if (!cloudName || !uploadPreset) {
+      alert("Cloudinary credentials are not configured.");
+      return;
+    }
 
     setUploading(true);
     setUploadProgress(0);
     const file = e.target.files[0];
     const data = new FormData();
     data.append('file', file);
+    data.append('upload_preset', uploadPreset);
 
     // Use XMLHttpRequest for progress tracking
     const xhr = new XMLHttpRequest();
@@ -90,15 +99,15 @@ export default function AdminPage() {
       if (xhr.status === 200) {
         try {
           const json = JSON.parse(xhr.responseText);
-          setFormData(prev => ({ ...prev, [field]: json.url }));
+          setFormData(prev => ({ ...prev, [field]: json.secure_url }));
           setStatus(`Uploaded ${field} successfully!`);
         } catch (err) {
           console.error('JSON Parse Error:', err);
           setStatus(`Error parsing server response for ${field}`);
         }
       } else {
-        console.error('Upload failed:', xhr.statusText);
-        setStatus(`Error uploading ${field}: ${xhr.statusText || 'Server Error'}`);
+        console.error('Upload failed:', xhr.responseText);
+        setStatus(`Error uploading ${field}: Server Error`);
       }
       setUploading(false);
     };
@@ -109,7 +118,9 @@ export default function AdminPage() {
       setUploading(false);
     };
 
-    xhr.open('POST', '/api/upload');
+    // Cloudinary endpoint (video and image use different resource types implicitly handled by auto or specifying video)
+    // using "auto" resource_type allows uploading both images and videos through the same endpoint
+    xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudName}/${field === 'preview_video' ? 'video' : 'image'}/upload`);
     xhr.send(data);
   };
 
