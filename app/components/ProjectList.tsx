@@ -22,8 +22,9 @@ export default function ProjectList({ projects }: { projects: Project[] }) {
     return (
         <div className="w-full max-w-7xl mx-auto mb-32 relative">
             {/* Header */}
-            <div className="border-b border-white/20 pb-4 mb-4 flex justify-end items-end">
-                <h3 className="text-xs font-mono uppercase text-neutral-500 tracking-widest">Category</h3>
+            <div className="border-b border-white/20 pb-4 mb-4 flex justify-between items-end">
+                <h3 className="text-xs font-mono uppercase text-neutral-500 tracking-widest text-left w-32 hidden md:block">Date</h3>
+                <h3 className="text-xs font-mono uppercase text-neutral-500 tracking-widest text-right flex-1">Category</h3>
             </div>
 
             {/* List Items */}
@@ -35,6 +36,11 @@ export default function ProjectList({ projects }: { projects: Project[] }) {
                             onMouseLeave={() => setHoveredId(null)}
                             className="relative border-t border-white/10 py-6 md:py-8 flex flex-col md:flex-row justify-between items-start md:items-center group cursor-pointer transition-colors hover:bg-white/5 px-2 md:px-4 gap-4 md:gap-0"
                         >
+                            {/* Date */}
+                            <div className="text-neutral-600 font-mono text-[10px] md:text-sm w-32 group-hover:text-neon-green transition-colors uppercase tracking-wider hidden md:block">
+                                {new Date(project.createdAt).toLocaleDateString('de-DE', { year: 'numeric', month: '2-digit' })}
+                            </div>
+
                             {/* Title (Big) */}
                             <div className="flex-1 w-full">
                                 <h4 className="text-4xl md:text-5xl font-black uppercase text-white group-hover:text-neon-green transition-colors leading-none">
