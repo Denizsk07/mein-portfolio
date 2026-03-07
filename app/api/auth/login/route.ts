@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
+// Force cache invalidation on Vercel - next.js bug with deleted exports
 export async function POST(request: Request) {
     const body = await request.json();
     const { password } = body;
