@@ -38,7 +38,7 @@ export default async function ProjectPage({ params }: { params: { id: string } }
             </nav>
 
             {/* HERO SECTION */}
-            <section className="relative w-full h-[80vh] flex flex-col justify-end p-4 md:p-12 border-b border-white/10">
+            <section className="relative w-full min-h-[50vh] flex flex-col justify-end p-4 md:p-12 border-b border-white/10 pt-32">
                 <div className="absolute inset-0 z-[-1]">
                     <video
                         src={project.preview_video}
@@ -52,7 +52,7 @@ export default async function ProjectPage({ params }: { params: { id: string } }
                 </div>
 
                 <div className="max-w-7xl w-full mx-auto relative z-10">
-                    <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-8 mt-16 md:mt-0">
+                    <div className="flex flex-col gap-6 mt-16 md:mt-0">
                         <div>
                             <span className="inline-block px-3 py-1 border border-neon-green text-neon-green text-xs font-mono uppercase tracking-widest mb-6 rounded-full bg-neon-green/10">
                                 {project.category}
@@ -62,7 +62,7 @@ export default async function ProjectPage({ params }: { params: { id: string } }
                             </h1>
                         </div>
 
-                        <div className="md:w-1/3 text-sm md:text-base text-gray-300 font-mono leading-relaxed">
+                        <div className="md:w-1/2 text-sm md:text-base text-gray-300 font-mono leading-relaxed">
                             {project.description}
                         </div>
                     </div>
@@ -71,22 +71,30 @@ export default async function ProjectPage({ params }: { params: { id: string } }
 
             {/* INFO GRID */}
             <section className="py-24 border-b border-white/10">
-                <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div className="max-w-7xl mx-auto px-4 flex flex-wrap gap-12 md:gap-24">
                     <div>
                         <h4 className="text-xs text-neutral-500 uppercase tracking-widest mb-2 font-mono">Role</h4>
                         <p className="text-xl font-bold">{project.role || 'Director & Editor'}</p>
                     </div>
-                    <div>
-                        <h4 className="text-xs text-neutral-500 uppercase tracking-widest mb-2 font-mono">Client</h4>
-                        <p className="text-xl font-bold">{project.client || 'Confidential'}</p>
-                    </div>
+                    {project.client && project.client.trim() !== '' && (
+                        <div>
+                            <h4 className="text-xs text-neutral-500 uppercase tracking-widest mb-2 font-mono">Client</h4>
+                            <p className="text-xl font-bold">{project.client}</p>
+                        </div>
+                    )}
                     <div>
                         <h4 className="text-xs text-neutral-500 uppercase tracking-widest mb-2 font-mono">Tools</h4>
                         <p className="text-xl font-bold">{project.tools || 'DaVinci Resolve'}</p>
                     </div>
                     <div>
-                        <h4 className="text-xs text-neutral-500 uppercase tracking-widest mb-2 font-mono">Year</h4>
-                        <p className="text-xl font-bold">{project.year || new Date(project.createdAt).getFullYear()}</p>
+                        <h4 className="text-xs text-neutral-500 uppercase tracking-widest mb-2 font-mono">Date</h4>
+                        <p className="text-xl font-bold">
+                            {project.year || new Date(project.createdAt).toLocaleDateString('de-DE', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric'
+                            })}
+                        </p>
                     </div>
                 </div>
             </section>
