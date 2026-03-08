@@ -47,6 +47,7 @@ export default async function ProjectPage({ params }: { params: { id: string } }
                             muted
                             loop
                             playsInline
+                            preload="metadata"
                             className="w-full h-full object-cover opacity-60"
                         />
                     ) : project.image ? (
@@ -113,6 +114,7 @@ export default async function ProjectPage({ params }: { params: { id: string } }
                         <video
                             src={project.preview_video}
                             controls
+                            preload="metadata"
                             className="w-full h-full object-contain"
                         />
                     </div>

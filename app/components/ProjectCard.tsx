@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 
 type ProjectCardProps = {
     _id?: string;
@@ -18,6 +18,17 @@ type ProjectCardProps = {
 };
 
 export const ProjectCard = ({ _id, title, description, previewVideo, image, category }: ProjectCardProps) => {
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const isInView = useInView(videoRef, { once: false, margin: "200px" });
+
+    useEffect(() => {
+        if (!videoRef.current) return;
+        if (isInView) {
+            videoRef.current.play().catch(() => {});
+        } else {
+            videoRef.current.pause();
+        }
+    }, [isInView]);
 
     return (
         <div className="group relative w-full flex flex-col h-full">
@@ -35,11 +46,12 @@ export const ProjectCard = ({ _id, title, description, previewVideo, image, cate
                 <Link href={`/project/${_id}`} className="block relative w-full aspect-[4/5] bg-black border-b border-white/10 overflow-hidden group/media">
                     {previewVideo ? (
                         <video
+                            ref={videoRef}
                             src={previewVideo}
-                            autoPlay
                             muted
                             loop
                             playsInline
+                            preload="metadata"
                             className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover/media:scale-105"
                         />
                     ) : image ? (
