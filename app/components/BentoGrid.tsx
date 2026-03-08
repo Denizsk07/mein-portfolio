@@ -13,7 +13,7 @@ export default function BentoGrid() {
             <div className="grid grid-cols-1 md:grid-cols-4 border-t border-l border-white/20">
 
                 {/* 1. TITLE & BIO */}
-                <div className="md:col-span-2 border-r border-b border-white/20 p-12 flex flex-col justify-between min-h-[400px] hover:bg-white/5 transition-colors">
+                <div className="md:col-span-2 md:row-span-2 border-r border-b border-white/20 p-12 flex flex-col justify-between min-h-[400px] hover:bg-white/5 transition-colors">
                     <div>
                         <h2 className="text-neon-green text-sm font-mono uppercase tracking-widest mb-4">Profile</h2>
                         <h3 className="text-4xl font-bold text-white mb-6">Media Designer <br /><span className="text-neutral-500">Image & Sound</span></h3>
@@ -23,14 +23,8 @@ export default function BentoGrid() {
                     </p>
                 </div>
 
-                {/* 2. STATS */}
-                <div className="md:col-span-1 border-r border-b border-white/20 p-12 flex flex-col justify-center items-center text-center hover:bg-white/5 transition-colors group">
-                    <ExperienceCounter />
-                    <p className="mt-4 text-xs font-mono uppercase text-neutral-500 group-hover:text-neon-green transition-colors">Professional Experience</p>
-                </div>
-                
-                {/* 2.5 PROFILE IMAGE */}
-                <div className="md:col-span-1 border-r border-b border-white/20 relative overflow-hidden group min-h-[300px] md:min-h-[400px]">
+                {/* 2. PROFILE IMAGE (Tall portrait) */}
+                <div className="md:col-span-1 md:row-span-2 border-r border-b border-white/20 relative overflow-hidden group min-h-[300px] md:min-h-full">
                     <div className="absolute inset-0 bg-black z-[-2]" />
                     <img 
                         src="/profile.jpg" 
@@ -38,14 +32,16 @@ export default function BentoGrid() {
                         className="absolute inset-0 w-full h-full object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent pointer-events-none" />
-                    <div className="absolute bottom-6 left-6 z-10">
-                         <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse shadow-[0_0_10px_#ccff00] mb-2" />
-                         <p className="text-xs font-mono uppercase text-white tracking-widest text-shadow-sm">On Set / Edit</p>
-                    </div>
                 </div>
 
-                {/* 3. LOCATION */}
-                <div className="md:col-span-1 border-r border-b border-white/20 p-12 flex flex-col justify-center items-center text-center hover:bg-white/5 transition-colors relative overflow-hidden group">
+                {/* 3. STATS */}
+                <div className="md:col-span-1 border-r border-b border-white/20 p-8 flex flex-col justify-center items-center text-center hover:bg-white/5 transition-colors group">
+                    <ExperienceCounter />
+                    <p className="mt-4 text-xs font-mono uppercase text-neutral-500 group-hover:text-neon-green transition-colors">Professional Experience</p>
+                </div>
+
+                {/* 4. LOCATION */}
+                <div className="md:col-span-1 border-r border-b border-white/20 p-8 flex flex-col justify-center items-center text-center hover:bg-white/5 transition-colors relative overflow-hidden group">
                     {/* Hover Image Reveal */}
                     <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1595867865331-405cb670d947?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center opacity-0 group-hover:opacity-20 transition-opacity duration-500 grayscale" />
 

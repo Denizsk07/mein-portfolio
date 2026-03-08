@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import SessionWrapper from "./SessionWrapper";
 import GrainOverlay from "./components/GrainOverlay";
-import CustomCursor from "./components/CustomCursor";
 import Scanlines from "./components/Scanlines";
 import { AuroraBackground } from "./components/AuroraBackground";
 import { GridSpotlight } from "./components/GridSpotlight";
@@ -25,14 +24,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark cursor-none">
+    <html lang="en" className="dark">
       <body className={`${inter.className} min-h-screen relative bg-[var(--background)] text-[var(--foreground)] selection:bg-purple-500 selection:text-white`}>
         {/* Anti-Theft Protection */}
         <SiteProtection />
         {/* SmoothScroll Client Component */}
         <SmoothScroll>
           <Preloader />
-          <CustomCursor />
           <SessionWrapper>
             <main className="flex flex-col min-h-screen w-full">
               {children}
