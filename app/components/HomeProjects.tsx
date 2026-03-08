@@ -23,6 +23,7 @@ export default function HomeProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string>('All Funds');
+  const [activeMediaType, setActiveMediaType] = useState<'video' | 'photo'>('video');
 
   useEffect(() => {
     fetch('/api/projects?limit=0') // Fetch all
@@ -40,12 +41,17 @@ export default function HomeProjects() {
       });
   }, []);
 
-  // Get unique categories for all projects
-  const categories = ['All Funds', ...Array.from(new Set(projects.map(p => p.category)))];
+  // Filter by media type first
+  const mediaFilteredProjects = projects.filter(p => 
+    activeMediaType === 'video' ? p.preview_video : (!p.preview_video && p.image)
+  );
+
+  // Get unique categories for CURRENT media type
+  const categories = ['All Funds', ...Array.from(new Set(mediaFilteredProjects.map(p => p.category)))];
 
   const filteredProjects = activeCategory === 'All Funds'
-    ? projects
-    : projects.filter(p => p.category === activeCategory);
+    ? mediaFilteredProjects
+    : mediaFilteredProjects.filter(p => p.category === activeCategory);
 
   return (
     <section className="py-32 relative z-10 min-h-screen" id="projects">
@@ -97,7 +103,40 @@ export default function HomeProjects() {
               <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
                 <div>
                   <p className="text-neon-green font-mono text-sm tracking-widest mb-2">// DIRECTORY_ROOT</p>
-                  <h4 className="text-4xl md:text-5xl font-black uppercase text-white">All Projects</h4>
+                  <div className="flex items-center gap-6">
+                    <h4 className="text-4xl md:text-5xl font-black uppercase text-white">All Projects</h4>
+                    
+                    {/* MEDIA TOGGLE */}
+                    <div className="hidden md:flex bg-black border border-white/20 p-1 rounded-full">
+                        <button 
+                            onClick={() => { setActiveMediaType('video'); setActiveCategory('All Funds'); }}
+                            className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${activeMediaType === 'video' ? 'bg-neon-green text-black' : 'text-neutral-500 hover:text-white'}`}
+                        >
+                            Videos
+                        </button>
+                        <button 
+                            onClick={() => { setActiveMediaType('photo'); setActiveCategory('All Funds'); }}
+                            className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${activeMediaType === 'photo' ? 'bg-neon-green text-black' : 'text-neutral-500 hover:text-white'}`}
+                        >
+                            Photography
+                        </button>
+                    </div>
+                  </div>
+                  {/* MOBILE MEDIA TOGGLE */}
+                  <div className="flex md:hidden mt-4 gap-2">
+                        <button 
+                            onClick={() => { setActiveMediaType('video'); setActiveCategory('All Funds'); }}
+                            className={`flex-1 py-2 border text-xs font-bold uppercase tracking-widest transition-colors ${activeMediaType === 'video' ? 'border-neon-green bg-neon-green/10 text-neon-green' : 'border-white/20 text-neutral-500'}`}
+                        >
+                            Videos
+                        </button>
+                        <button 
+                            onClick={() => { setActiveMediaType('photo'); setActiveCategory('All Funds'); }}
+                            className={`flex-1 py-2 border text-xs font-bold uppercase tracking-widest transition-colors ${activeMediaType === 'photo' ? 'border-neon-green bg-neon-green/10 text-neon-green' : 'border-white/20 text-neutral-500'}`}
+                        >
+                            Photography
+                        </button>
+                  </div>
                 </div>
 
                 {/* FOLDER TABS - SCROLLABLE ON MOBILE */}
