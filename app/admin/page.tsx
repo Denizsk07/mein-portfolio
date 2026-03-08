@@ -466,11 +466,10 @@ export default function AdminPage() {
             </div>
           </div>
 
-          {/* FILE UPLOAD: VIDEO AND IMAGE */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            <div className="flex flex-col gap-2 border border-white/10 p-4 rounded bg-white/5">
-                <label className="text-xs uppercase tracking-widest text-neon-green">
-                    {editingId && formData.preview_video ? 'Replace Project Video (Optional)' : 'Upload Project Video (Optional)'}
+          {/* FILE UPLOAD: VIDEO */}
+          <div className="mt-6 border border-white/10 p-4 rounded bg-white/5">
+                <label className="text-xs uppercase tracking-widest text-neon-green mb-2 block">
+                    {editingId && formData.preview_video ? 'Replace Main Preview Video (Optional)' : 'Upload Main Preview Video (Optional)'}
                 </label>
                 <input
                 type="file"
@@ -481,7 +480,7 @@ export default function AdminPage() {
 
                 {/* PROGRESS BAR */}
                 {uploading && uploadProgress > 0 && uploadProgress < 100 && (
-                <div className="w-full bg-neutral-800 h-2 rounded-full overflow-hidden mt-2">
+                <div className="w-full bg-neutral-800 h-2 rounded-full overflow-hidden mt-4">
                     <div
                     className="bg-neon-green h-full transition-all duration-200"
                     style={{ width: `${uploadProgress}%` }}
@@ -499,25 +498,6 @@ export default function AdminPage() {
                         <p className="text-green-500">✓ Video attached</p>
                     </div>
                 )}
-            </div>
-
-            <div className="flex flex-col gap-2 border border-white/10 p-4 rounded bg-white/5">
-                <label className="text-xs uppercase tracking-widest text-neon-green">
-                    {editingId && formData.image ? 'Replace Project Photo (Optional)' : 'Upload Project Photo (Optional)'}
-                </label>
-                <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => handleFileUpload(e, 'image')}
-                className="text-white text-sm file:bg-white file:text-black file:border-0 file:px-4 file:py-2 file:uppercase file:font-bold file:mr-4 hover:file:bg-neon-green cursor-pointer"
-                />
-
-                {formData.image && !uploading && (
-                    <div className="mt-2 text-xs">
-                        <p className="text-green-500">✓ Cover Photo attached</p>
-                    </div>
-                )}
-            </div>
           </div>
 
           {/* NEW: MULTIPLE GALLERY UPLOAD */}

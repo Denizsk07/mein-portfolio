@@ -28,6 +28,21 @@ export default function BentoGrid() {
                     <ExperienceCounter />
                     <p className="mt-4 text-xs font-mono uppercase text-neutral-500 group-hover:text-neon-green transition-colors">Professional Experience</p>
                 </div>
+                
+                {/* 2.5 PROFILE IMAGE */}
+                <div className="md:col-span-1 border-r border-b border-white/20 relative overflow-hidden group min-h-[300px] md:min-h-[400px]">
+                    <div className="absolute inset-0 bg-black z-[-2]" />
+                    <img 
+                        src="/profile.jpg" 
+                        alt="Deniz Kaya - Media Designer"
+                        className="absolute inset-0 w-full h-full object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent pointer-events-none" />
+                    <div className="absolute bottom-6 left-6 z-10">
+                         <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse shadow-[0_0_10px_#ccff00] mb-2" />
+                         <p className="text-xs font-mono uppercase text-white tracking-widest text-shadow-sm">On Set / Edit</p>
+                    </div>
+                </div>
 
                 {/* 3. LOCATION */}
                 <div className="md:col-span-1 border-r border-b border-white/20 p-12 flex flex-col justify-center items-center text-center hover:bg-white/5 transition-colors relative overflow-hidden group">

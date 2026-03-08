@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { usePathname } from 'next/navigation';
 
 export default function CustomCursor() {
+    const pathname = usePathname();
     const [isHovering, setIsHovering] = useState(false);
     
     // Use Framer Motion values instead of React state for 60fps+ performance without re-renders
@@ -37,7 +39,11 @@ export default function CustomCursor() {
             window.removeEventListener('mousemove', updateMousePosition);
             window.removeEventListener('mouseover', handleMouseOver);
         };
-    }, [cursorX, cursorY]);
+    }, [cursorX, cursorY, pathname]);
+
+    if (pathname && pathname.startsWith('/admin')) {
+        return null; // Disable custom cursor on admin pages
+    }
 
     return (
         <motion.div

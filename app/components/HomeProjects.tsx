@@ -11,6 +11,7 @@ type Project = {
   title: string;
   description: string;
   image: string;
+  gallery?: string[];
   preview_video?: string;
   youtube_link: string;
   category: string;
@@ -42,7 +43,7 @@ export default function HomeProjects() {
   }, []);
 
   const videoProjects = projects.filter(p => p.preview_video);
-  const photoProjects = projects.filter(p => !p.preview_video && p.image);
+  const photoProjects = projects.filter(p => !p.preview_video && (p.image || (p.gallery && p.gallery.length > 0)));
 
   // Filter based on active toggle
   const mediaFilteredProjects = activeMediaType === 'video' ? videoProjects : photoProjects;
@@ -176,7 +177,7 @@ export default function HomeProjects() {
                         title={project.title}
                         description={project.description}
                         previewVideo={project.preview_video}
-                        image={project.image}
+                        image={project.image || (project.gallery && project.gallery.length > 0 ? project.gallery[0] : undefined)}
                         category={project.category}
                       />
                     </motion.div>

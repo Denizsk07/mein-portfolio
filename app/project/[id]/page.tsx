@@ -50,9 +50,9 @@ export default async function ProjectPage({ params }: { params: { id: string } }
                             preload="metadata"
                             className="w-full h-full object-cover opacity-60"
                         />
-                    ) : project.image ? (
+                    ) : project.image || (project.gallery && project.gallery.length > 0) ? (
                         <img 
-                            src={project.image}
+                            src={project.image || project.gallery?.[0]}
                             alt=""
                             className="w-full h-full object-cover opacity-60"
                         />
@@ -118,10 +118,10 @@ export default async function ProjectPage({ params }: { params: { id: string } }
                             className="w-full h-full object-contain"
                         />
                     </div>
-                ) : project.image && (!project.gallery || project.gallery.length === 0) ? (
+                ) : (project.image || (project.gallery && project.gallery.length > 0)) && (!project.gallery || project.gallery.length === 0) ? (
                     <div className="w-full border border-white/20 rounded-2xl overflow-hidden shadow-2xl shadow-neon-green/5 flex items-center justify-center bg-black">
                         <img
-                            src={project.image}
+                            src={project.image || project.gallery?.[0]}
                             alt={project.title}
                             className="w-full h-auto object-contain max-h-[85vh]"
                         />
@@ -139,10 +139,10 @@ export default async function ProjectPage({ params }: { params: { id: string } }
                            </div>
                         )}
                         
-                        {(project.image && !project.preview_video) && (
+                        {(project.image && !project.preview_video && (!project.gallery || project.gallery.length === 0)) && (
                             <div className="break-inside-avoid mb-8 border border-white/20 rounded-xl overflow-hidden bg-black shadow-xl group">
                                 <img
-                                    src={project.image}
+                                    src={project.image || project.gallery?.[0]}
                                     alt="Cover"
                                     className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
                                 />
