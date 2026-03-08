@@ -107,28 +107,31 @@ export default function HomeProjects() {
                     <h4 className="text-4xl md:text-5xl font-black uppercase text-white">All Projects</h4>
                     
                     {/* ANIMATED TOGGLE */}
-                    <div className="relative flex items-center bg-black border border-white/20 rounded-full p-1.5 w-fit">
-                        {/* Active Background Pill */}
-                        <motion.div 
-                            className="absolute bg-neon-green rounded-full shadow-[0_0_15px_rgba(204,255,0,0.3)] h-[80%] top-[10%]"
-                            initial={false}
-                            animate={{ 
-                                left: activeMediaType === 'video' ? '6px' : '50%', 
-                                width: 'calc(50% - 6px)' 
-                            }}
-                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                        />
-                        
+                    <div className="flex bg-black border border-white/20 rounded-full p-1.5 w-fit">
                         <button 
                             onClick={() => { setActiveMediaType('video'); setActiveCategory('All Funds'); }}
                             className={`relative px-8 py-2.5 rounded-full text-xs font-black uppercase tracking-[0.2em] transition-colors z-10 ${activeMediaType === 'video' ? 'text-black' : 'text-neutral-500 hover:text-white'}`}
                         >
+                            {activeMediaType === 'video' && (
+                                <motion.div 
+                                    layoutId="mediaTogglePill"
+                                    className="absolute inset-0 bg-neon-green rounded-full shadow-[0_0_15px_rgba(204,255,0,0.3)] z-[-1]"
+                                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                                />
+                            )}
                             Videos
                         </button>
                         <button 
                             onClick={() => { setActiveMediaType('photo'); setActiveCategory('All Funds'); }}
                             className={`relative px-8 py-2.5 rounded-full text-xs font-black uppercase tracking-[0.2em] transition-colors z-10 ${activeMediaType === 'photo' ? 'text-black' : 'text-neutral-500 hover:text-white'}`}
                         >
+                            {activeMediaType === 'photo' && (
+                                <motion.div 
+                                    layoutId="mediaTogglePill"
+                                    className="absolute inset-0 bg-neon-green rounded-full shadow-[0_0_15px_rgba(204,255,0,0.3)] z-[-1]"
+                                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                                />
+                            )}
                             Photography
                         </button>
                     </div>
