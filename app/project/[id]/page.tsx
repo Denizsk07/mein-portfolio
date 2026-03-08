@@ -116,7 +116,7 @@ export default async function ProjectPage({ params }: { params: { id: string } }
                             className="w-full h-full object-contain"
                         />
                     </div>
-                ) : project.image ? (
+                ) : project.image && (!project.gallery || project.gallery.length === 0) ? (
                     <div className="w-full border border-white/20 rounded-2xl overflow-hidden shadow-2xl shadow-neon-green/5 flex items-center justify-center bg-black">
                         <img
                             src={project.image}
@@ -125,6 +125,39 @@ export default async function ProjectPage({ params }: { params: { id: string } }
                         />
                     </div>
                 ) : null}
+
+                {/* GALLERY FRAGMENT */}
+                {project.gallery && project.gallery.length > 0 && (
+                    <div className={`mt-12 columns-1 sm:columns-2 lg:columns-3 gap-8 ${project.preview_video || project.image ? 'border-t border-white/10 pt-24' : ''}`}>
+                        {/* Optional explicit title if both exist, otherwise it's just the gallery */}
+                        {(project.preview_video || project.image) && (
+                           <div className="col-span-1 sm:col-span-2 lg:col-span-3 mb-12 flex items-center gap-4 break-inside-avoid">
+                                <h2 className="text-3xl font-black uppercase tracking-widest">Project Gallery</h2>
+                                <div className="h-[1px] flex-1 bg-neon-green shadow-[0_0_10px_#ccff00]" />
+                           </div>
+                        )}
+                        
+                        {(project.image && !project.preview_video) && (
+                            <div className="break-inside-avoid mb-8 border border-white/20 rounded-xl overflow-hidden bg-black shadow-xl group">
+                                <img
+                                    src={project.image}
+                                    alt="Cover"
+                                    className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
+                                />
+                            </div>
+                        )}
+
+                        {project.gallery.map((imgUrl: string, i: number) => (
+                            <div key={i} className="break-inside-avoid mb-8 border border-white/20 rounded-xl overflow-hidden bg-black shadow-xl group cursor-zoom-in">
+                                <img
+                                    src={imgUrl}
+                                    alt={`${project.title} Gallery ${i + 1}`}
+                                    className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                )}
             </section>
             <section className="py-32 flex justify-center border-t border-white/20">
                 <MagneticWrapper strength={0.4}>

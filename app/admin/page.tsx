@@ -12,6 +12,7 @@ export default function AdminPage() {
     title: '',
     description: '',
     image: '', // Will be populated by upload
+    gallery: [] as string[], // NEW: Array for multiple photos
     preview_video: '', // Will be populated by upload
     youtube_link: '',
     category: '',
@@ -24,6 +25,8 @@ export default function AdminPage() {
   const [status, setStatus] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0); 
+  const [galleryUploading, setGalleryUploading] = useState(false);
+  const [galleryProgress, setGalleryProgress] = useState(0);
   const [categories, setCategories] = useState<string[]>([]);
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   
@@ -131,6 +134,53 @@ export default function AdminPage() {
     xhr.send(data);
   };
 
+  // MULTIPLE FILE UPLOADER FOR GALLERY
+  const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+    if (!cloudName || !uploadPreset) {
+      alert("Cloudinary credentials are not configured.");
+      return;
+    }
+
+    setGalleryUploading(true);
+    setGalleryProgress(0); // Optional: simplified progress for bulk
+    setStatus(`Uploading ${e.target.files.length} gallery images...`);
+
+    const files = Array.from(e.target.files);
+    const uploadPromises = files.map(async (file) => {
+        const data = new FormData();
+        data.append('file', file);
+        data.append('upload_preset', uploadPreset);
+
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+            method: 'POST',
+            body: data,
+        });
+
+        if (!res.ok) throw new Error('Failed to upload an image');
+        const json = await res.json();
+        return json.secure_url;
+    });
+
+    try {
+        const uploadedUrls = await Promise.all(uploadPromises);
+        setFormData(prev => ({
+            ...prev,
+            gallery: [...prev.gallery, ...uploadedUrls] // Append to existing
+        }));
+        setStatus(`Successfully uploaded ${uploadedUrls.length} gallery images!`);
+    } catch (err) {
+        console.error('Gallery Upload Error:', err);
+        setStatus('Error uploading gallery images.');
+    } finally {
+        setGalleryUploading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('Submitting...');
@@ -161,7 +211,7 @@ export default function AdminPage() {
 
         if(!editingId) {
             setFormData(prev => ({
-            title: '', description: '', image: '', preview_video: '', youtube_link: '', category: prev.category, role: '', client: '', tools: '', year: ''
+            title: '', description: '', image: '', gallery: [], preview_video: '', youtube_link: '', category: prev.category, role: '', client: '', tools: '', year: ''
             }));
         }
         
@@ -187,6 +237,7 @@ export default function AdminPage() {
       title: project.title || '',
       description: project.description || '',
       image: project.image || '',
+      gallery: project.gallery || [],
       preview_video: project.preview_video || '',
       youtube_link: project.youtube_link || '',
       category: project.category || '',
@@ -219,7 +270,7 @@ export default function AdminPage() {
   const cancelEdit = () => {
     setEditingId(null);
     setFormData({
-      title: '', description: '', image: '', preview_video: '', youtube_link: '', category: '', role: '', client: '', tools: '', year: ''
+      title: '', description: '', image: '', gallery: [], preview_video: '', youtube_link: '', category: '', role: '', client: '', tools: '', year: ''
     });
     setStatus(null);
   };
@@ -463,10 +514,51 @@ export default function AdminPage() {
 
                 {formData.image && !uploading && (
                     <div className="mt-2 text-xs">
-                        <p className="text-green-500">✓ Photo attached</p>
+                        <p className="text-green-500">✓ Cover Photo attached</p>
                     </div>
                 )}
             </div>
+          </div>
+
+          {/* NEW: MULTIPLE GALLERY UPLOAD */}
+          <div className="flex flex-col gap-2 border border-white/10 p-4 rounded bg-white/5 mt-6">
+              <label className="text-xs uppercase tracking-widest text-neon-green">
+                  Upload Gallery Photos (Multiple)
+              </label>
+              <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleGalleryUpload}
+                  className="text-white text-sm file:bg-white file:text-black file:border-0 file:px-4 file:py-2 file:uppercase file:font-bold file:mr-4 hover:file:bg-neon-green cursor-pointer"
+              />
+
+              {galleryUploading && (
+                  <p className="text-xs text-neon-green mt-2 font-mono uppercase animate-pulse">
+                      Uploading Gallery Images...
+                  </p>
+              )}
+
+              {formData.gallery && formData.gallery.length > 0 && (
+                  <div className="mt-4">
+                      <p className="text-xs text-green-500 mb-2">✓ {formData.gallery.length} Gallery Photos Attached</p>
+                      <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
+                          {formData.gallery.map((url, i) => (
+                              <div key={i} className="relative aspect-square bg-black border border-white/20 rounded overflow-hidden group">
+                                  <img src={url} alt={`Gallery ${i}`} className="w-full h-full object-cover opacity-80" />
+                                  {/* Button to remove single image */}
+                                  <button
+                                      type="button"
+                                      onClick={() => setFormData(prev => ({ ...prev, gallery: prev.gallery.filter((_, index) => index !== i) }))}
+                                      className="absolute top-1 right-1 bg-red-500 text-white w-5 h-5 flex items-center justify-center rounded-full text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity"
+                                  >
+                                    ×
+                                  </button>
+                              </div>
+                          ))}
+                      </div>
+                  </div>
+              )}
           </div>
 
           <button

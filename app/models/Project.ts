@@ -4,6 +4,7 @@ export interface ProjectDocument extends Document {
   title: string;
   description: string;
   image?: string;
+  gallery?: string[];
   preview_video: string;
   youtube_link?: string;
   category: string;
@@ -18,8 +19,9 @@ export interface ProjectDocument extends Document {
 const projectSchema = new Schema<ProjectDocument>({
   title: { type: String, required: true },
   description: { type: String, required: true },
-  image: { type: String, required: false }, // Optional (Video only)
-  preview_video: { type: String, required: true }, // Used as MAIN video now
+  image: { type: String, required: false }, // Main cover (Video or single photo)
+  gallery: { type: [String], default: [] }, // Array for multi-photo galleries
+  preview_video: { type: String, required: false }, // Used as MAIN video now
   youtube_link: { type: String, required: false }, // Optional
   category: { type: String, required: true },
   role: { type: String, required: false },

@@ -25,11 +25,11 @@ export async function GET(req: NextRequest) {
 
 // POST-Methode
 export async function POST(request: NextRequest) {
-  const { title, description, image, preview_video, youtube_link, category, role, client, tools, year } = await request.json();
+  const { title, description, image, gallery, preview_video, youtube_link, category, role, client, tools, year } = await request.json();
 
-  // Updated Validation: Require preview_video, make image/youtube optional
-  if (!title || !description || !preview_video || !category) {
-    return NextResponse.json({ error: 'Title, Description, Video, and Category are required.' }, { status: 400 });
+  // Updated Validation: Require category, title, description. At least ONE media source should ideally exist but isn't strictly enforced.
+  if (!title || !description || !category) {
+    return NextResponse.json({ error: 'Title, Description, and Category are required.' }, { status: 400 });
   }
 
   try {
@@ -39,9 +39,10 @@ export async function POST(request: NextRequest) {
     const projectData = {
       title,
       description,
-      preview_video,
+      preview_video: preview_video || undefined,
       category,
       image: image || undefined,
+      gallery: Array.isArray(gallery) ? gallery : [],
       youtube_link: youtube_link || undefined,
       role,
       client,
