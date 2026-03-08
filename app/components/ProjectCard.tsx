@@ -20,7 +20,7 @@ type ProjectCardProps = {
 export const ProjectCard = ({ _id, title, description, previewVideo, image, category }: ProjectCardProps) => {
 
     return (
-        <div className="group relative w-full inline-block h-fit">
+        <div className="group relative w-full flex flex-col h-full">
             {/* FOLDER TAB (Visual only) */}
             <div className="w-32 h-8 bg-[#0a0a0a] border-t border-x border-white/20 rounded-t-lg relative z-10 -mb-[1px] ml-4 flex items-center justify-center">
                 <span className="text-[10px] font-mono text-white/50 uppercase tracking-wider group-hover:text-neon-green transition-colors">
@@ -29,10 +29,10 @@ export const ProjectCard = ({ _id, title, description, previewVideo, image, cate
             </div>
 
             {/* FOLDER BODY */}
-            <div className="relative rounded-lg rounded-tl-none overflow-hidden bg-[#0a0a0a] border border-white/20 group-hover:border-neon-green transition-all duration-300 shadow-2xl flex flex-col">
+            <div className="relative rounded-lg rounded-tl-none overflow-hidden bg-[#0a0a0a] border border-white/20 group-hover:border-neon-green transition-all duration-300 shadow-2xl flex-1 flex flex-col">
 
                 {/* Media Player - Clickable */}
-                <Link href={`/project/${_id}`} className="block relative w-full bg-black border-b border-white/10 overflow-hidden group/media">
+                <Link href={`/project/${_id}`} className="block relative w-full aspect-[4/5] bg-black border-b border-white/10 overflow-hidden group/media">
                     {previewVideo ? (
                         <video
                             src={previewVideo}
@@ -40,16 +40,16 @@ export const ProjectCard = ({ _id, title, description, previewVideo, image, cate
                             muted
                             loop
                             playsInline
-                            className="relative w-full h-auto object-cover transition-transform duration-500 group-hover/media:scale-105"
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover/media:scale-105"
                         />
                     ) : image ? (
                         <img 
                             src={image} 
                             alt={title} 
-                            className="relative w-full h-auto object-cover transition-transform duration-500 group-hover/media:scale-105"
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover/media:scale-105"
                         />
                     ) : (
-                        <div className="w-full aspect-video flex items-center justify-center text-neutral-700">No Media Source</div>
+                        <div className="absolute inset-0 flex items-center justify-center text-neutral-700">No Media Source</div>
                     )}
                     {/* Hover Overlay */}
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/media:opacity-100 transition-opacity flex items-center justify-center">
@@ -59,7 +59,7 @@ export const ProjectCard = ({ _id, title, description, previewVideo, image, cate
                     </div>
                 </Link>
 
-                <div className="p-6 flex flex-col">
+                <div className="p-6 flex-1 flex flex-col">
                     <div className="flex justify-between items-start mb-4">
                         <h3 className="text-xl font-black uppercase text-white group-hover:text-neon-green transition-colors leading-tight">
                             {title}

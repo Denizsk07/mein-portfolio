@@ -23,7 +23,6 @@ export default function HomeProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string>('All Funds');
-  const [activeMediaType, setActiveMediaType] = useState<'video' | 'photo'>('video');
 
   useEffect(() => {
     fetch('/api/projects?limit=0') // Fetch all
@@ -41,17 +40,21 @@ export default function HomeProjects() {
       });
   }, []);
 
-  // Filter by media type first
-  const mediaFilteredProjects = projects.filter(p => 
-    activeMediaType === 'video' ? p.preview_video : (!p.preview_video && p.image)
-  );
+  const videoProjects = projects.filter(p => p.preview_video);
+  const photoProjects = projects.filter(p => !p.preview_video && p.image);
 
-  // Get unique categories for CURRENT media type
-  const categories = ['All Funds', ...Array.from(new Set(mediaFilteredProjects.map(p => p.category)))];
+  const videoCategories = Array.from(new Set(videoProjects.map(p => p.category)));
+  const categories = ['All Funds', ...videoCategories];
+  
+  if (photoProjects.length > 0 && !categories.includes('Photography')) {
+    categories.push('Photography');
+  }
 
-  const filteredProjects = activeCategory === 'All Funds'
-    ? mediaFilteredProjects
-    : mediaFilteredProjects.filter(p => p.category === activeCategory);
+  const filteredProjects = activeCategory === 'Photography'
+    ? photoProjects
+    : activeCategory === 'All Funds'
+      ? videoProjects
+      : videoProjects.filter(p => p.category === activeCategory);
 
   return (
     <section className="py-32 relative z-10 min-h-screen" id="projects">
@@ -103,40 +106,7 @@ export default function HomeProjects() {
               <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
                 <div>
                   <p className="text-neon-green font-mono text-sm tracking-widest mb-2">// DIRECTORY_ROOT</p>
-                  <div className="flex items-center gap-6">
-                    <h4 className="text-4xl md:text-5xl font-black uppercase text-white">All Projects</h4>
-                    
-                    {/* MEDIA TOGGLE */}
-                    <div className="hidden md:flex bg-black border border-white/20 p-1 rounded-full">
-                        <button 
-                            onClick={() => { setActiveMediaType('video'); setActiveCategory('All Funds'); }}
-                            className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${activeMediaType === 'video' ? 'bg-neon-green text-black' : 'text-neutral-500 hover:text-white'}`}
-                        >
-                            Videos
-                        </button>
-                        <button 
-                            onClick={() => { setActiveMediaType('photo'); setActiveCategory('All Funds'); }}
-                            className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${activeMediaType === 'photo' ? 'bg-neon-green text-black' : 'text-neutral-500 hover:text-white'}`}
-                        >
-                            Photography
-                        </button>
-                    </div>
-                  </div>
-                  {/* MOBILE MEDIA TOGGLE */}
-                  <div className="flex md:hidden mt-4 gap-2">
-                        <button 
-                            onClick={() => { setActiveMediaType('video'); setActiveCategory('All Funds'); }}
-                            className={`flex-1 py-2 border text-xs font-bold uppercase tracking-widest transition-colors ${activeMediaType === 'video' ? 'border-neon-green bg-neon-green/10 text-neon-green' : 'border-white/20 text-neutral-500'}`}
-                        >
-                            Videos
-                        </button>
-                        <button 
-                            onClick={() => { setActiveMediaType('photo'); setActiveCategory('All Funds'); }}
-                            className={`flex-1 py-2 border text-xs font-bold uppercase tracking-widest transition-colors ${activeMediaType === 'photo' ? 'border-neon-green bg-neon-green/10 text-neon-green' : 'border-white/20 text-neutral-500'}`}
-                        >
-                            Photography
-                        </button>
-                  </div>
+                  <h4 className="text-4xl md:text-5xl font-black uppercase text-white">All Projects</h4>
                 </div>
 
                 {/* FOLDER TABS - SCROLLABLE ON MOBILE */}
@@ -163,11 +133,11 @@ export default function HomeProjects() {
               <div className="border-t-2 border-neon-green relative p-8 md:p-12 bg-white/5 min-h-[500px] rounded-b-3xl">
                 <div className="absolute top-0 left-0 w-full h-[1px] bg-neon-green shadow-[0_0_20px_#ccff00]" />
 
-                <div className="columns-1 md:columns-2 lg:columns-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
                   {filteredProjects.map((project, i) => (
                     <motion.div
                       key={project._id}
-                      className="break-inside-avoid mb-8 w-full inline-block"
+                      className="w-full flex"
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.3 }}
