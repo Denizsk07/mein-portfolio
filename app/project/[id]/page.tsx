@@ -40,14 +40,22 @@ export default async function ProjectPage({ params }: { params: { id: string } }
             {/* HERO SECTION */}
             <section className="relative w-full min-h-[50vh] flex flex-col justify-end p-4 md:p-12 border-b border-white/10 pt-32">
                 <div className="absolute inset-0 z-[-1]">
-                    <video
-                        src={project.preview_video}
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        className="w-full h-full object-cover opacity-60"
-                    />
+                    {project.preview_video ? (
+                        <video
+                            src={project.preview_video}
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            className="w-full h-full object-cover opacity-60"
+                        />
+                    ) : project.image ? (
+                        <img 
+                            src={project.image}
+                            alt=""
+                            className="w-full h-full object-cover opacity-60"
+                        />
+                    ) : null}
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
                 </div>
 
@@ -100,13 +108,23 @@ export default async function ProjectPage({ params }: { params: { id: string } }
             </section>
 
             <section className="py-24 px-4 max-w-7xl mx-auto">
-                <div className="aspect-video w-full border border-white/20 rounded-2xl overflow-hidden shadow-2xl shadow-neon-green/5 flex items-center justify-center bg-black">
-                    <video
-                        src={project.preview_video}
-                        controls
-                        className="w-full h-full object-contain"
-                    />
-                </div>
+                {project.preview_video ? (
+                    <div className="aspect-video w-full border border-white/20 rounded-2xl overflow-hidden shadow-2xl shadow-neon-green/5 flex items-center justify-center bg-black">
+                        <video
+                            src={project.preview_video}
+                            controls
+                            className="w-full h-full object-contain"
+                        />
+                    </div>
+                ) : project.image ? (
+                    <div className="w-full border border-white/20 rounded-2xl overflow-hidden shadow-2xl shadow-neon-green/5 flex items-center justify-center bg-black">
+                        <img
+                            src={project.image}
+                            alt={project.title}
+                            className="w-full h-auto object-contain max-h-[85vh]"
+                        />
+                    </div>
+                ) : null}
             </section>
             <section className="py-32 flex justify-center border-t border-white/20">
                 <MagneticWrapper strength={0.4}>

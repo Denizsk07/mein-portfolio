@@ -144,6 +144,7 @@ export default function HomeProjects() {
                         title={project.title}
                         description={project.description}
                         previewVideo={project.preview_video}
+                        image={project.image}
                         category={project.category}
                       />
                     </motion.div>

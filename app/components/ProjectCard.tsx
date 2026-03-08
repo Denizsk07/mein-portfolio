@@ -17,7 +17,7 @@ type ProjectCardProps = {
     isDimmed?: boolean;
 };
 
-export const ProjectCard = ({ title, description, previewVideo, category }: ProjectCardProps) => {
+export const ProjectCard = ({ _id, title, description, previewVideo, image, category }: ProjectCardProps) => {
 
     return (
         <div className="group relative w-full inline-block h-fit mb-8">
@@ -31,7 +31,7 @@ export const ProjectCard = ({ title, description, previewVideo, category }: Proj
             {/* FOLDER BODY */}
             <div className="relative rounded-lg rounded-tl-none overflow-hidden bg-[#0a0a0a] border border-white/20 group-hover:border-neon-green transition-all duration-300 shadow-2xl flex flex-col">
 
-                {/* Video Player */}
+                {/* Media Player */}
                 <div className="relative w-full bg-black border-b border-white/10 flex items-center justify-center overflow-hidden">
                     {previewVideo ? (
                         <video
@@ -42,8 +42,14 @@ export const ProjectCard = ({ title, description, previewVideo, category }: Proj
                             playsInline
                             className="w-full h-auto object-cover"
                         />
+                    ) : image ? (
+                        <img 
+                            src={image} 
+                            alt={title} 
+                            className="w-full h-auto object-cover"
+                        />
                     ) : (
-                        <div className="w-full aspect-video flex items-center justify-center text-neutral-700">No Video Source</div>
+                        <div className="w-full aspect-video flex items-center justify-center text-neutral-700">No Media Source</div>
                     )}
                 </div>
 
@@ -56,9 +62,16 @@ export const ProjectCard = ({ title, description, previewVideo, category }: Proj
                             ID: {Math.floor(Math.random() * 9000) + 1000}
                         </div>
                     </div>
-                    <p className="text-neutral-500 text-sm font-mono leading-relaxed line-clamp-3">
+                    <p className="text-neutral-500 text-sm font-mono leading-relaxed line-clamp-3 mb-4">
                         {description}
                     </p>
+                    <div className="mt-auto pt-4 border-t border-white/10 flex justify-end">
+                        <Link href={`/project/${_id}`}>
+                            <button className="text-xs uppercase font-bold tracking-widest text-white hover:text-neon-green transition-colors flex items-center gap-2">
+                                {previewVideo ? "Watch Video ↗" : "View Details ↗"}
+                            </button>
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>
