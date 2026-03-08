@@ -65,7 +65,7 @@ export default function BentoGrid() {
                     </div>
 
                     {/* Icons */}
-                    <div className="flex gap-16 items-center">
+                    <div className="flex gap-8 md:gap-16 items-center flex-wrap justify-center mt-6 md:mt-0">
                         <div
                             className="group cursor-pointer p-2 transition-all duration-300 hover:scale-110"
                             onMouseEnter={() => setActiveTool("After Effects")}
