@@ -93,9 +93,9 @@ export default function HomeProjects() {
               show: { opacity: 1, transition: { staggerChildren: 0.1 } }
             }}
           >
-            {/* 1. LIST VIEW (TOP 5 RECENT) */}
+            {/* 1. LIST VIEW (TOP 5 RECENT VIDEOS ONLY) */}
             <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
-              <ProjectList projects={projects.slice(0, 5)} />
+              <ProjectList projects={projects.filter(p => p.preview_video).slice(0, 5)} />
             </motion.div>
 
             {/* 2. DIRECTORY VIEW (ALL PROJECTS With Folders) */}
@@ -130,11 +130,11 @@ export default function HomeProjects() {
               <div className="border-t-2 border-neon-green relative p-8 md:p-12 bg-white/5 min-h-[500px] rounded-b-3xl">
                 <div className="absolute top-0 left-0 w-full h-[1px] bg-neon-green shadow-[0_0_20px_#ccff00]" />
 
-                <div className="columns-1 md:columns-2 lg:columns-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {filteredProjects.map((project, i) => (
                     <motion.div
                       key={project._id}
-                      className="break-inside-avoid mb-8 w-full inline-block"
+                      className="w-full flex"
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.3 }}
