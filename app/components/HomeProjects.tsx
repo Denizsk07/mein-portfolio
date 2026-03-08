@@ -40,15 +40,12 @@ export default function HomeProjects() {
       });
   }, []);
 
-  const videoProjects = projects.filter(p => p.preview_video);
-  const photoProjects = projects.filter(p => !p.preview_video && p.image);
+  // Get unique categories for all projects
+  const categories = ['All Funds', ...Array.from(new Set(projects.map(p => p.category)))];
 
-  // Get unique categories for videos
-  const videoCategories = ['All Funds', ...Array.from(new Set(videoProjects.map(p => p.category)))];
-
-  const filteredVideoProjects = activeCategory === 'All Funds'
-    ? videoProjects
-    : videoProjects.filter(p => p.category === activeCategory);
+  const filteredProjects = activeCategory === 'All Funds'
+    ? projects
+    : projects.filter(p => p.category === activeCategory);
 
   return (
     <section className="py-32 relative z-10 min-h-screen" id="projects">
@@ -105,7 +102,7 @@ export default function HomeProjects() {
 
                 {/* FOLDER TABS - SCROLLABLE ON MOBILE */}
                 <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
-                  {videoCategories.map((cat) => (
+                  {categories.map((cat) => (
                     <button
                       key={cat}
                       onClick={() => setActiveCategory(cat)}
@@ -128,7 +125,7 @@ export default function HomeProjects() {
                 <div className="absolute top-0 left-0 w-full h-[1px] bg-neon-green shadow-[0_0_20px_#ccff00]" />
 
                 <div className="columns-1 md:columns-2 lg:columns-3 gap-8">
-                  {filteredVideoProjects.map((project, i) => (
+                  {filteredProjects.map((project, i) => (
                     <motion.div
                       key={project._id}
                       className="break-inside-avoid mb-8 w-full inline-block"
@@ -146,51 +143,12 @@ export default function HomeProjects() {
                       />
                     </motion.div>
                   ))}
-                  {filteredVideoProjects.length === 0 && (
+                  {filteredProjects.length === 0 && (
                     <p className="text-neutral-600 font-mono text-center w-full py-20 col-span-3">Directory Empty.</p>
                   )}
                 </div>
               </div>
             </div>
-
-            {/* 3. PHOTOGRAPHY SECTION (PHOTOS ONLY) */}
-            {photoProjects.length > 0 && (
-              <div className="mt-48">
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-                  <div>
-                    <p className="text-neon-green font-mono text-sm tracking-widest mb-2">// DIRECTORY_STILLS</p>
-                    <h4 className="text-4xl md:text-5xl font-black uppercase text-white">Photography</h4>
-                  </div>
-                </div>
-
-                {/* FOLDER CONTAINER - Look like a file cabinet content area */}
-                <div className="border-t-2 border-neon-green relative p-8 md:p-12 bg-white/5 min-h-[500px] rounded-b-3xl">
-                  <div className="absolute top-0 left-0 w-full h-[1px] bg-neon-green shadow-[0_0_20px_#ccff00]" />
-
-                  <div className="columns-1 md:columns-2 lg:columns-3 gap-8">
-                    {photoProjects.map((project, i) => (
-                      <motion.div
-                        key={project._id}
-                        className="break-inside-avoid mb-8 w-full inline-block"
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <ProjectCard
-                          _id={project._id}
-                          title={project.title}
-                          description={project.description}
-                          previewVideo={project.preview_video}
-                          image={project.image}
-                          category={project.category}
-                        />
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
           </motion.div>
         )}
       </div>
