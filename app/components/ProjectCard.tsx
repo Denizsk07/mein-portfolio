@@ -20,7 +20,7 @@ type ProjectCardProps = {
 export const ProjectCard = ({ title, description, previewVideo, category }: ProjectCardProps) => {
 
     return (
-        <div className="group relative flex flex-col h-full">
+        <div className="group relative w-full inline-block h-fit mb-8">
             {/* FOLDER TAB (Visual only) */}
             <div className="w-32 h-8 bg-[#0a0a0a] border-t border-x border-white/20 rounded-t-lg relative z-10 -mb-[1px] ml-4 flex items-center justify-center">
                 <span className="text-[10px] font-mono text-white/50 uppercase tracking-wider group-hover:text-neon-green transition-colors">
@@ -29,10 +29,10 @@ export const ProjectCard = ({ title, description, previewVideo, category }: Proj
             </div>
 
             {/* FOLDER BODY */}
-            <div className="relative rounded-lg rounded-tl-none overflow-hidden bg-[#0a0a0a] border border-white/20 group-hover:border-neon-green transition-all duration-300 shadow-2xl flex-1 flex flex-col">
+            <div className="relative rounded-lg rounded-tl-none overflow-hidden bg-[#0a0a0a] border border-white/20 group-hover:border-neon-green transition-all duration-300 shadow-2xl flex flex-col">
 
                 {/* Video Player */}
-                <div className="relative aspect-video w-full bg-black border-b border-white/10">
+                <div className="relative w-full bg-black border-b border-white/10 flex items-center justify-center overflow-hidden">
                     {previewVideo ? (
                         <video
                             src={previewVideo}
@@ -40,14 +40,14 @@ export const ProjectCard = ({ title, description, previewVideo, category }: Proj
                             muted
                             loop
                             playsInline
-                            className="w-full h-full object-cover"
+                            className="w-full h-auto object-cover"
                         />
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center text-neutral-700">No Video Source</div>
+                        <div className="w-full aspect-video flex items-center justify-center text-neutral-700">No Video Source</div>
                     )}
                 </div>
 
-                <div className="p-6 flex-1 flex flex-col">
+                <div className="p-6 flex flex-col">
                     <div className="flex justify-between items-start mb-4">
                         <h3 className="text-xl font-black uppercase text-white group-hover:text-neon-green transition-colors leading-tight">
                             {title}

@@ -25,6 +25,7 @@ export default function AdminPage() {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0); 
   const [categories, setCategories] = useState<string[]>([]);
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   
   // Manage Projects State
   const [projects, setProjects] = useState<any[]>([]);
@@ -297,20 +298,47 @@ export default function AdminPage() {
 
             <div className="flex flex-col gap-2">
               <label className="text-xs uppercase tracking-widest text-neon-green">Category</label>
-              <input
-                name="category"
-                className="bg-neutral-900 border border-neutral-800 p-4 text-white focus:border-neon-green outline-none h-full"
-                placeholder="Select or Create New..."
-                value={formData.category}
-                onChange={handleChange}
-                required
-                list="category-suggestions"
-              />
-              <datalist id="category-suggestions">
-                {categories.map((cat, i) => (
-                  <option key={i} value={cat} />
-                ))}
-              </datalist>
+              <div className="relative h-full flex flex-col justify-center">
+                <input
+                  name="category"
+                  className="bg-neutral-900 border border-neutral-800 p-4 w-full text-white focus:border-neon-green outline-none h-full pr-12 appearance-none"
+                  placeholder="Select or Create New..."
+                  value={formData.category}
+                  onChange={handleChange}
+                  onFocus={() => setShowCategoryDropdown(true)}
+                  onBlur={() => setShowCategoryDropdown(false)}
+                  required
+                  autoComplete="off"
+                />
+                <div 
+                  className="absolute right-0 top-0 bottom-0 px-4 flex items-center justify-center cursor-pointer text-white/50 hover:text-white"
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    setShowCategoryDropdown(!showCategoryDropdown);
+                    setTimeout(() => document.getElementsByName('category')[0]?.focus(), 0);
+                  }}
+                >
+                  ▼
+                </div>
+
+                {showCategoryDropdown && categories.length > 0 && (
+                  <ul className="absolute top-full left-0 right-0 z-50 mt-1 bg-neutral-900 border border-neon-green max-h-48 overflow-y-auto rounded-b shadow-2xl">
+                    {categories.filter(c => c).map((cat, i) => (
+                      <li 
+                        key={i} 
+                        className="p-3 hover:bg-neon-green hover:text-black transition-colors cursor-pointer text-white border-b border-white/5 last:border-0 truncate"
+                        onMouseDown={(e) => {
+                          e.preventDefault(); // Prevent input onBlur from firing
+                          setFormData({ ...formData, category: cat });
+                          setShowCategoryDropdown(false);
+                        }}
+                      >
+                        {cat}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
 
               {/* Quick Select Chips - Visible Buttons */}
               <div className="flex flex-wrap gap-2 mt-2">
@@ -444,10 +472,14 @@ export default function AdminPage() {
                     projects.map(project => (
                         <div key={project._id} className="bg-white/5 border border-white/10 p-4 md:p-6 rounded flex flex-col md:flex-row justify-between items-start md:items-center hover:border-white/30 transition-colors">
                             <div className="mb-4 md:mb-0">
-                                <span className="text-[10px] uppercase font-mono text-neon-green border border-neon-green/30 px-2 py-1 rounded inline-block mb-2">{project.category}</span>
-                                <h3 className="text-2xl font-black uppercase tracking-tight">{project.title}</h3>
+                                {project.category ? (
+                                    <span className="text-[10px] uppercase font-mono text-neon-green border border-neon-green/30 px-2 py-1 rounded inline-block mb-2">{project.category}</span>
+                                ) : (
+                                    <span className="text-[10px] uppercase font-mono text-neutral-500 border border-neutral-700 px-2 py-1 rounded inline-block mb-2">Uncategorized</span>
+                                )}
+                                <h3 className="text-2xl font-black uppercase tracking-tight">{project.title || 'Untitled Project'}</h3>
                                 <p className="text-neutral-500 text-xs font-mono mt-1">
-                                    Added: {new Date(project.createdAt).toLocaleDateString('de-DE')}
+                                    Added: {project.createdAt ? new Date(project.createdAt).toLocaleDateString('de-DE') : 'Unknown Date'}
                                 </p>
                             </div>
                             <div className="flex gap-2 w-full md:w-auto">

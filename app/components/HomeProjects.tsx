@@ -130,10 +130,11 @@ export default function HomeProjects() {
               <div className="border-t-2 border-neon-green relative p-8 md:p-12 bg-white/5 min-h-[500px] rounded-b-3xl">
                 <div className="absolute top-0 left-0 w-full h-[1px] bg-neon-green shadow-[0_0_20px_#ccff00]" />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="columns-1 md:columns-2 lg:columns-3 gap-8">
                   {filteredProjects.map((project, i) => (
                     <motion.div
                       key={project._id}
+                      className="break-inside-avoid mb-8 w-full inline-block"
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.3 }}
